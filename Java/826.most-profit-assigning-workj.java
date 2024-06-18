@@ -14,22 +14,23 @@ class Solution {
             .sorted((a, b) -> a.getKey() - b.getKey())
             .iterator();
 
-
         int lastProfit = 0;
-        if (diffProfitMapSorted.hasNext()) {
+        while (diffProfitMapSorted.hasNext()) {
             var curr = diffProfitMapSorted.next();
             if (curr.getValue() > lastProfit) {
                 lastProfit = curr.getValue();
                 maxProfitByDiff.put(curr.getKey(), curr.getValue());
+                
             }
         }
 
         List<Integer> diffKeys = maxProfitByDiff.keySet().stream().sorted().toList();
         int result = 0;
         for (int i = 0; i < worker.length; i++) {
-            int profitInd = Collections.binarySearch(diffKeys, worker[i]);
-            if (profitInd < 0) profitInd = -profitInd + 2;
-            result += maxProfitByDiff.get(profitInd);
+            int diffInd = Collections.binarySearch(diffKeys, worker[i]);
+            if (diffInd == -1) return 0;
+            if (diffInd < 0) diffInd = - diffInd - 2;
+            result += maxProfitByDiff.get(diffKeys.get(diffInd));
         }
         return result;
     }
